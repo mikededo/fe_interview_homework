@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Moon, Settings, HelpCircle } from 'lucide-svelte';
+	import { HelpCircle, Moon, Settings } from 'lucide-svelte';
 </script>
 
 <!-- This is just mock up data :) -->

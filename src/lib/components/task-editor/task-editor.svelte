@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { slide } from 'svelte/transition';
 	import { sineOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
 
 	export let show = false;
 </script>

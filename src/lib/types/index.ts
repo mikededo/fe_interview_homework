@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
 export type Task = {
 	tracking: null;
 	repetition_rule: null;
