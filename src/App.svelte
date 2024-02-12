@@ -1,5 +1,7 @@
-<script lang="ts">
-	import Timeline from './lib/Timeline.svelte';
+<script>
+	import { Sidenav } from './lib';
 </script>
 
-<Timeline />
+<main class="flex h-screen w-screen">
+	<Sidenav />
+</main>

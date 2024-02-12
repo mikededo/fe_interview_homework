@@ -6,9 +6,7 @@ import tailwindNesting from 'tailwindcss/nesting/index.js';
 export default {
 	plugins: [
 		//TODO: Should we specify paths to make faster?
-		postcssImport({
-			skipDuplicates: true,
-		}),
+		postcssImport({ skipDuplicates: true }),
 		tailwindNesting,
 		tailwindcss,
 		postcssPresetEnv({
