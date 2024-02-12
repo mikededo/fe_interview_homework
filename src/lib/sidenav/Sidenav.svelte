@@ -3,8 +3,7 @@
 </script>
 
 <!-- This is just mock up data :) -->
-
-<nav class="no-wrap flex h-screen w-64 flex-row">
+<nav class="no-wrap flex h-screen w-sidenav-w flex-row">
 	<section
 		class="flex h-full w-12 flex-col items-center gap-4 bg-plum-135 py-4">
 		<a href="https://plan.toggl.com/">

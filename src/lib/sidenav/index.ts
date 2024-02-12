@@ -1,3 +1,3 @@
-import Sidenav from './Sidenav.svelte';
+import Sidenav from './sidenav.svelte';
 
 export { Sidenav };
