@@ -53,7 +53,8 @@
 	<div
 		bind:this={swimlaneScrollable}
 		class="flex h-[calc(100%_-_var(--header-height))] w-full flex-col overflow-auto
-		bg-background">
+		bg-background"
+	>
 		{#if tasks}
 			<div class="no-wrap flex h-6 w-full divide-x transition-all">
 				{#each { length: nextCount - prevCount } as _}

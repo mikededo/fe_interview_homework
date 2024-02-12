@@ -6,7 +6,7 @@ export default {
 	semi: true,
 	useTabs: true,
 	svelteSortOrder: 'options-scripts-styles-markup',
-	bracketSameLine: true,
+	bracketSameLine: false,
 	plugins: [
 		'prettier-plugin-svelte',
 		'prettier-plugin-organize-imports',
