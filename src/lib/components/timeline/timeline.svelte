@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
+	import TimelineHeader from './timeline-header.svelte';
 	import { LocalStorageKeys } from '../../config';
 	import type { Task } from '../../types';
 	import { LocalStorage } from '../../utils';
@@ -47,10 +48,8 @@
 </script>
 
 <section class="relative min-h-screen w-full overflow-hidden">
-	<div class="h-header-h w-full bg-white">
-		{swimlaneScrollable?.scrollLeft}
-	</div>
 	<!-- TODO: Extract variable into tailwind config -->
+	<TimelineHeader />
 	<div
 		bind:this={swimlaneScrollable}
 		class="flex h-[calc(100%_-_var(--header-height))] w-full flex-col overflow-auto
