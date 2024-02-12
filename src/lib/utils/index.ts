@@ -10,4 +10,15 @@ const get = (key: string): string | null => {
 	return window.localStorage.getItem(key);
 };
 
-export const LocalStorage = { get };
+const set = (key: string, value: string): void => {
+	if (
+		typeof window === 'undefined' ||
+		typeof window.localStorage === 'undefined'
+	) {
+		return;
+	}
+
+	window.localStorage.setItem(key, value);
+};
+
+export const LocalStorage = { get, set };

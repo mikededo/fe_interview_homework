@@ -1,10 +1,10 @@
 <script lang="ts">
+	// TODO: Refactor this logic
 	import { onMount } from 'svelte';
 
 	import TimelineHeader from './timeline-header.svelte';
-	import { LocalStorageKeys } from '../../config';
+	import { authStore, loadAuthData } from '../../stores';
 	import type { Task } from '../../types';
-	import { LocalStorage } from '../../utils';
 
 	let swimlaneScrollable: HTMLDivElement;
 	let tasks: Task[];
@@ -13,13 +13,8 @@
 	let nextCount = 15;
 
 	onMount(async () => {
-		// When component has been mounted to the DOM, we are already in the browser
-		const projectId = LocalStorage.get(LocalStorageKeys.PROJECT_ID);
-		const teamId = LocalStorage.get(LocalStorageKeys.TEAM_ID);
-		const token = LocalStorage.get(LocalStorageKeys.JWT);
-
-		// TODO: If by any chance one of the values is not set
-		if (!projectId || !teamId || !token) {
+		loadAuthData();
+		if (!$authStore) {
 			return;
 		}
 
@@ -30,6 +25,7 @@
 
 		const since = prevFifteen.toJSON().slice(0, 10);
 		const until = nextFifteen.toJSON().slice(0, 10);
+		const { projectId, teamId, token } = $authStore;
 		const url = `https://api.plan.toggl.space/api/v6-rc1/${projectId}/tasks?since=${since}&until=${until}&short=true&team=${teamId}`;
 
 		try {
