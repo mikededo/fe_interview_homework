@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { Task } from '../types';
-	import { LocalStorage } from '../utils';
-	import { LocalStorageKeys } from '../config';
+	import type { Task } from '../../types';
+	import { LocalStorage } from '../../utils';
+	import { LocalStorageKeys } from '../../config';
 	import { onMount } from 'svelte';
 
 	let swimlaneScrollable: HTMLDivElement;
