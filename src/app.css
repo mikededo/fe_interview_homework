@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 * {
-	--sidevar-width: 16rem;
+	--sidevar-width: 256px;
 	--header-height: 96px;
 }
 
