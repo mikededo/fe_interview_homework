@@ -102,7 +102,7 @@ export default {
 					highlight: 'var(--color-pink-highlight)',
 				},
 				error: {
-					default: 'var(--color-error)',
+					DEFAULT: 'var(--color-error)',
 					hover: 'var(--color-error-hover)',
 					onclick: 'var(--color-error-onclick)',
 					disabled: 'var(--color-error-disabled)',
@@ -113,7 +113,7 @@ export default {
 					'20-disabled': 'var(--color-error-20-disabled)',
 				},
 				success: {
-					default: 'var(--color-success)',
+					DEFAULT: 'var(--color-success)',
 					hover: 'var(--color-success-hover)',
 					onclick: 'var(--color-success-onclick)',
 					disabled: 'var(--color-success-disabled)',

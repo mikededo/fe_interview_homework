@@ -23,12 +23,11 @@
 			return;
 		}
 
-		fetchTasks($authStore).then(() => {
-			setTimeout(() => {
-				swimlaneScrollable.scrollLeft =
-					(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
-			}, 0);
-		});
+		setTimeout(() => {
+			swimlaneScrollable.scrollLeft =
+				(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
+		}, 0);
+		fetchTasks($authStore);
 	});
 </script>
 
@@ -40,24 +39,19 @@
 		class="flex h-[calc(100%_-_var(--header-height))] w-full flex-col overflow-auto
 		bg-background"
 	>
-		{#if $tasksStore.tasks}
-			<div class="no-wrap flex h-8 w-full transition-all">
-				{#each { length } as _, i}
-					<TimelineDate index={i} />
-				{/each}
-			</div>
+		<div class="no-wrap flex h-8 w-full transition-all">
+			{#each { length } as _, i}
+				<TimelineDate index={i} />
+			{/each}
+		</div>
 
-			<div class="no-wrap flex h-full w-full">
-				{#each { length } as _, i}
-					<div
-						class="h-full w-[54px] shrink-0 border-r"
-						class:bg-plum-5={isIndexWeekend(i, $tasksStore.dateRange.start)}
-					/>
-				{/each}
-			</div>
-		{:else if $tasksStore.error}
-			<!-- TODO: Add error styling -->
-			<div>An error ocurred</div>
-		{/if}
+		<div class="no-wrap flex h-full w-full">
+			{#each { length } as _, i}
+				<div
+					class="h-full w-[54px] shrink-0 border-r"
+					class:bg-plum-5={isIndexWeekend(i, $tasksStore.dateRange.start)}
+				/>
+			{/each}
+		</div>
 	</div>
 </section>

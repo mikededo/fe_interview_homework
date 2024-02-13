@@ -1,11 +1,11 @@
 import { get, writable } from 'svelte/store';
 
 import type { Task } from '../types';
+import { setError } from './errors';
 
 type TasksStore = {
 	dateRange: { start: number; end: number };
 	tasks?: Task[];
-	error?: Error;
 };
 
 export const tasksStore = writable<TasksStore>({
@@ -34,11 +34,7 @@ export const fetchTasks = async ({
 			await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
 		).json();
 		tasksStore.update((prev) => ({ ...prev, tasks: tasks, error: undefined }));
-	} catch (e: unknown) {
-		tasksStore.update((prev) => ({
-			...prev,
-			tasks: undefined,
-			error: e as Error,
-		}));
+	} catch (_) {
+		setError('Failed to fetch tasks. Check your token or your network!');
 	}
 };
