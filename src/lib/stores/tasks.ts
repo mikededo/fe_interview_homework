@@ -28,10 +28,7 @@ const doTasksOverlap = (a: Task, b: Task): boolean => {
 	const bEnd = new Date(b.end_date);
 	bEnd.setDate(bEnd.getDate() + 1);
 
-	return doDateRangesOverlap(
-		[new Date(a.start_date), aEnd],
-		[new Date(b.start_date), bEnd]
-	);
+	return doDateRangesOverlap([new Date(a.start_date), aEnd], [new Date(b.start_date), bEnd]);
 };
 
 const updateTasksStore = (tasks: Task[]): Task[][] => {
@@ -46,9 +43,7 @@ const updateTasksStore = (tasks: Task[]): Task[][] => {
 
 	sorted.forEach((task) => {
 		const availableLaneIndex = swimlanes.findIndex((lane) => {
-			const doesCollapse = lane.some((laneTask) =>
-				doTasksOverlap(task, laneTask)
-			);
+			const doesCollapse = lane.some((laneTask) => doTasksOverlap(task, laneTask));
 			return !doesCollapse;
 		});
 
@@ -130,9 +125,7 @@ export const updateTask = (newTask: Task) => {
 			return store;
 		}
 
-		const updatedTasks = store.tasks.map((task) =>
-			task.id === newTask.id ? newTask : task
-		);
+		const updatedTasks = store.tasks.map((task) => (task.id === newTask.id ? newTask : task));
 		return {
 			...store,
 			tasks: updatedTasks,

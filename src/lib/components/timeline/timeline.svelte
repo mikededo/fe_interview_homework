@@ -34,16 +34,12 @@
 		}
 	};
 
-	$: dates = generateDateRange(
-		$tasksStore.dateRange.start,
-		$tasksStore.dateRange.end
-	);
+	$: dates = generateDateRange($tasksStore.dateRange.start, $tasksStore.dateRange.end);
 
 	onMount(() => {
 		loadAuthData();
 		setTimeout(() => {
-			const left =
-				(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
+			const left = (swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
 			swimlaneScrollable.scrollTo({ left, behavior: 'instant' });
 		}, 0);
 

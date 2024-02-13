@@ -38,11 +38,7 @@
 </script>
 
 {#if $showAuthDialog}
-	<div
-		role="presentation"
-		class="fixed inset-0 bg-black/50"
-		transition:fade={{ duration: 150 }}
-	/>
+	<div role="presentation" class="fixed inset-0 bg-black/50" transition:fade={{ duration: 150 }} />
 	<div
 		role="dialog"
 		class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"
@@ -51,13 +47,9 @@
 		<div class="max-w-lg rounded bg-white p-8 shadow-lg">
 			<h2 class="text-xl font-semibold">Authentication</h2>
 			<p class="mb-4 italic">
-				Since this demo does not have authentication, I need you to set three
-				parameters!
+				Since this demo does not have authentication, I need you to set three parameters!
 			</p>
-			<form
-				on:submit|preventDefault={handleOnSubmit}
-				class="flex flex-col gap-4"
-			>
+			<form on:submit|preventDefault={handleOnSubmit} class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
 					<label for="projectId" class="text-sm">Project ID</label>
 					<input

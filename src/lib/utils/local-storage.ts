@@ -1,9 +1,6 @@
 const get = (key: string): string | null => {
 	// Ensure in browser and when user has localStorage active
-	if (
-		typeof window === 'undefined' ||
-		typeof window.localStorage === 'undefined'
-	) {
+	if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
 		return null;
 	}
 
@@ -11,10 +8,7 @@ const get = (key: string): string | null => {
 };
 
 const set = (key: string, value: string): void => {
-	if (
-		typeof window === 'undefined' ||
-		typeof window.localStorage === 'undefined'
-	) {
+	if (typeof window === 'undefined' || typeof window.localStorage === 'undefined') {
 		return;
 	}
 

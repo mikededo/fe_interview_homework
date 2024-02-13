@@ -7,12 +7,8 @@
 </script>
 
 <!-- This is just mock up data :) -->
-<nav
-	class="no-wrap no-shrink flex h-screen min-w-sidenav-w max-w-sidenav-w flex-row"
->
-	<section
-		class="no-shrink flex h-full w-12 min-w-12 flex-col items-center gap-4 bg-plum-135 py-4"
-	>
+<nav class="no-wrap no-shrink flex h-screen min-w-sidenav-w max-w-sidenav-w flex-row">
+	<section class="no-shrink flex h-full w-12 min-w-12 flex-col items-center gap-4 bg-plum-135 py-4">
 		<a href="https://plan.toggl.com/">
 			<Moon class="h-5 w-5 stroke-plum-50" />
 		</a>

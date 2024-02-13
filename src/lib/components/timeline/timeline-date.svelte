@@ -20,8 +20,7 @@
 	const isNextThirtyDays = !isToday && isDateNextThirtyDays(date);
 	const isNextNotThirtyDays = isNextThirtyDays && !isDateNextThirtyDays(next);
 	const isWeekend = isDateWeekend(date);
-	const withDivider =
-		!isToday && !isPrevToday && !isNextThirtyDays && !isNextNotThirtyDays;
+	const withDivider = !isToday && !isPrevToday && !isNextThirtyDays && !isNextNotThirtyDays;
 
 	const classes = twMerge(
 		'flex h-full w-full items-center justify-center',

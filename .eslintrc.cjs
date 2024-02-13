@@ -30,24 +30,13 @@ module.exports = {
 		],
 		'@typescript-eslint/consistent-type-imports': 'error',
 		'arrow-body-style': ['error', 'as-needed'],
-		'import/extensions': [
-			'error',
-			'ignorePackages',
-			{ '': 'never', tsx: 'never', ts: 'never' },
-		],
+		'import/extensions': ['error', 'ignorePackages', { '': 'never', tsx: 'never', ts: 'never' }],
 		'import/export': 2,
 		'import/no-unresolved': 'off',
 		'import/order': [
 			'error',
 			{
-				groups: [
-					'builtin',
-					'external',
-					'internal',
-					['parent', 'sibling'],
-					'index',
-					'object',
-				],
+				groups: ['builtin', 'external', 'internal', ['parent', 'sibling'], 'index', 'object'],
 				pathGroupsExcludedImportTypes: ['builtin'],
 				'newlines-between': 'always',
 				alphabetize: { order: 'asc' },

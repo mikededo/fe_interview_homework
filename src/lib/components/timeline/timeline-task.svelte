@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import {
-		CELL_WIDTH,
-		LANE_HEIGHT,
-		POOL_PADDING,
-		TASK_MARGIN,
-	} from '../../config';
+	import { CELL_WIDTH, LANE_HEIGHT, POOL_PADDING, TASK_MARGIN } from '../../config';
 	import { tasksStore, updateTask } from '../../stores';
 	import type { Task } from '../../types';
 	import { getDaysBetweenDates } from '../../utils';
@@ -24,9 +19,7 @@
 		if (isResizing || isDragging) {
 			draggedDistance = {
 				...draggedDistance,
-				dragged: Math.floor(
-					(event.clientX - draggedDistance.initial) / CELL_WIDTH
-				),
+				dragged: Math.floor((event.clientX - draggedDistance.initial) / CELL_WIDTH),
 			};
 			event.preventDefault();
 
