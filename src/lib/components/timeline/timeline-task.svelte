@@ -102,11 +102,19 @@
 	$: top = POOL_PADDING + lane * LANE_HEIGHT;
 </script>
 
+<style>
+	.transitions {
+		transition-property: width, box-shadow;
+		transition-duration: 50ms, 250ms;
+	}
+</style>
+
 <div
 	role="presentation"
-	class="absolute ml-0.5 h-task-h rounded-sm bg-purple-ui px-2 py-1.5 transition-all duration-[50ms] ease-in-out"
-	class:cursor-ew-resize={isLeftEdge || isRightEdge}
+	class="transitions absolute ml-0.5 h-task-h rounded-sm bg-purple-ui px-2 py-1.5 transition-all ease-in-out hover:shadow-md hover:shadow-purple-60"
+	class:hover:cursor-pointer={!isDragging && !isLeftEdge && !isRightEdge}
 	class:cursor-grab={isDragging}
+	class:cursor-ew-resize={isLeftEdge || isRightEdge}
 	class:drop-shadow-xl={isResizing}
 	style="left: {left}px; width: {width}px; top: {top}px"
 	on:mousemove={handleOnMouseMove}
