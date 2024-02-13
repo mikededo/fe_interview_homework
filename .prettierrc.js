@@ -7,23 +7,12 @@ export default {
 	useTabs: true,
 	svelteSortOrder: 'options-scripts-styles-markup',
 	bracketSameLine: false,
-	plugins: [
-		'prettier-plugin-svelte',
-		'prettier-plugin-organize-imports',
-		'prettier-plugin-tailwindcss',
-	],
+	plugins: ['prettier-plugin-svelte', 'prettier-plugin-tailwindcss'],
 	overrides: [
 		{
 			files: ['*.scss', '*.css'],
 			options: {
 				singleQuote: false,
-			},
-		},
-		{
-			files: '*.svelte',
-			options: {
-				parser: 'svelte',
-				organizeImportsSkipDestructiveCodeActions: true,
 			},
 		},
 	],

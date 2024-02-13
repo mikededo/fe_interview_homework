@@ -1,10 +1,10 @@
 import { get, writable } from 'svelte/store';
 
+import { authStore } from './auth';
+import { setError } from './errors';
 import { CELL_COUNT } from '../config';
 import type { Task } from '../types';
 import { doDateRangesOverlap } from '../utils';
-import { authStore } from './auth';
-import { setError } from './errors';
 
 type TasksStore = {
 	dateRange: { start: number; end: number };
@@ -43,7 +43,6 @@ const updateTasksStore = (tasks: Task[]): Task[][] => {
 			const doesCollapse = lane.some((laneTask) =>
 				doTasksOverlap(task, laneTask)
 			);
-			// console.log({ task, doesCollapse });
 			return !doesCollapse;
 		});
 
