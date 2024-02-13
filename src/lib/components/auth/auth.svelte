@@ -3,7 +3,7 @@
 	import { fade } from 'svelte/transition';
 
 	import { LocalStorageKeys } from '../../config';
-	import { loadAuthData, showAuthPopup } from '../../stores';
+	import { fetchTasks, loadAuthData, showAuthDialog } from '../../stores';
 	import { LocalStorage } from '../../utils';
 
 	// TODO: Refactor into input component
@@ -31,11 +31,13 @@
 			LocalStorage.set(LocalStorageKeys.JWT, token);
 
 			loadAuthData();
+			// Load the date once the user is authenticated
+			fetchTasks();
 		}
 	};
 </script>
 
-{#if $showAuthPopup}
+{#if $showAuthDialog}
 	<div
 		role="presentation"
 		class="fixed inset-0 bg-black/50"

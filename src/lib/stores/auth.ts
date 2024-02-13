@@ -9,7 +9,7 @@ type AuthData = {
 	token: string;
 };
 export const authStore = writable<AuthData | null>(null);
-export const showAuthPopup = writable(false);
+export const showAuthDialog = writable(false);
 
 export const loadAuthData = () => {
 	const projectId = LocalStorage.get(LocalStorageKeys.PROJECT_ID);
@@ -19,12 +19,12 @@ export const loadAuthData = () => {
 	// TODO: If by any chance one of the values is not set
 	if (!projectId || !teamId || !token) {
 		authStore.set(null);
-		showAuthPopup.set(true);
+		showAuthDialog.set(true);
 		return;
 	}
 
 	authStore.set({ projectId, teamId, token });
-	if (showAuthPopup) {
-		showAuthPopup.set(false);
+	if (showAuthDialog) {
+		showAuthDialog.set(false);
 	}
 };

@@ -6,7 +6,12 @@ type ErrorStore = {
 };
 
 export const errorStore = writable<ErrorStore>({ exists: false });
-export const setError = (message: string) =>
+export const setError = (message: string) => {
 	errorStore.set({ exists: true, message });
-export const clearError = () =>
+	setTimeout(() => {
+		clearError();
+	}, 2500);
+};
+export const clearError = () => {
 	errorStore.update((prev) => ({ ...prev, exists: false }));
+};
