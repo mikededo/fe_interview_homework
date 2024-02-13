@@ -15,12 +15,13 @@
 	export let lane: number;
 
 	let isResizing = false;
+	let isDragging = false;
 	let draggedDistance = { initial: 0, dragged: 0 };
 	let isLeftEdge = false;
 	let isRightEdge = false;
 
 	const handleOnMouseMove = (event: MouseEvent) => {
-		if (isResizing) {
+		if (isResizing || isDragging) {
 			draggedDistance = {
 				...draggedDistance,
 				dragged: Math.floor(
@@ -44,27 +45,36 @@
 
 	const handleOnMouseDown = (e: MouseEvent) => {
 		isResizing = isLeftEdge || isRightEdge;
+		isDragging = !isResizing;
 		draggedDistance.initial = e.clientX;
 	};
 
 	const handleOnMouseUp = () => {
-		if (isResizing) {
-			isResizing = false;
-			const newStartDate = new Date(task.start_date);
-			const newEndDate = new Date(task.end_date);
-
-			if (isLeftEdge) {
-				newStartDate.setDate(newStartDate.getDate() + draggedDistance.dragged);
-			} else {
-				newEndDate.setDate(newEndDate.getDate() + draggedDistance.dragged);
-			}
-
-			// Update the task dates in YYYY-MM-DD format
-			task.start_date = newStartDate.toISOString().split('T')[0];
-			task.end_date = newEndDate.toISOString().split('T')[0];
-			updateTask(task);
-			draggedDistance = { initial: 0, dragged: 0 };
+		if (!isResizing && !isDragging) {
+			return;
 		}
+
+		const newStartDate = new Date(task.start_date);
+		const newEndDate = new Date(task.end_date);
+
+		if (isDragging) {
+			// Update both ends
+			newStartDate.setDate(newStartDate.getDate() + draggedDistance.dragged);
+			newEndDate.setDate(newEndDate.getDate() + draggedDistance.dragged);
+		} else if (isLeftEdge) {
+			newStartDate.setDate(newStartDate.getDate() + draggedDistance.dragged);
+		} else if (isRightEdge) {
+			newEndDate.setDate(newEndDate.getDate() + draggedDistance.dragged);
+		}
+
+		// Update the task dates in YYYY-MM-DD format
+		task.start_date = newStartDate.toISOString().split('T')[0];
+		task.end_date = newEndDate.toISOString().split('T')[0];
+		updateTask(task);
+
+		isResizing = false;
+		isDragging = false;
+		draggedDistance = { initial: 0, dragged: 0 };
 	};
 
 	onMount(() => {
@@ -84,13 +94,18 @@
 	$: start = startDiff - $tasksStore.dateRange.start;
 
 	$: sizeChange = draggedDistance.dragged * CELL_WIDTH;
-	$: left = start * CELL_WIDTH + (isLeftEdge ? sizeChange : 0);
+	$: increaseLeft = isLeftEdge ? sizeChange : 0;
+	// If is moving the left edge, when need to keep the right edge in place
+	$: increaseRight = isRightEdge ? sizeChange : sizeChange * -1;
+
+	$: left =
+		(start + (isDragging ? draggedDistance.dragged : 0)) * CELL_WIDTH +
+		(!isDragging ? increaseLeft : 0);
 	// Adding one as the range is inclusive
 	$: width =
 		(getDaysBetweenDates(startDate, endDate) + 1) * CELL_WIDTH -
 		TASK_MARGIN * 2 +
-		// If is moving the left edge, when need to keep the right edge in place
-		(isRightEdge ? sizeChange : sizeChange * -1);
+		(!isDragging ? increaseRight : 0);
 	$: top = POOL_PADDING + lane * LANE_HEIGHT;
 </script>
 
@@ -98,6 +113,7 @@
 	role="presentation"
 	class="absolute ml-0.5 h-task-h rounded-sm bg-purple-ui px-2 py-1.5 transition-all duration-[50ms] ease-in-out"
 	class:cursor-ew-resize={isLeftEdge || isRightEdge}
+	class:cursor-grab={isDragging}
 	class:drop-shadow-xl={isResizing}
 	style="left: {left}px; width: {width}px; top: {top}px"
 	on:mousemove={handleOnMouseMove}

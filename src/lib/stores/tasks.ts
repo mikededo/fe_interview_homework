@@ -21,11 +21,18 @@ type BaseFetchTasksArgs = {
 	end: number;
 };
 
-const doTasksOverlap = (a: Task, b: Task): boolean =>
-	doDateRangesOverlap(
-		[new Date(a.start_date), new Date(a.end_date)],
-		[new Date(b.start_date), new Date(b.end_date)]
+const doTasksOverlap = (a: Task, b: Task): boolean => {
+	// Same as in the swimnlane, we need to add 1 as the end is inclusive
+	const aEnd = new Date(a.end_date);
+	aEnd.setDate(aEnd.getDate() + 1);
+	const bEnd = new Date(b.end_date);
+	bEnd.setDate(bEnd.getDate() + 1);
+
+	return doDateRangesOverlap(
+		[new Date(a.start_date), aEnd],
+		[new Date(b.start_date), bEnd]
 	);
+};
 
 const updateTasksStore = (tasks: Task[]): Task[][] => {
 	const swimlanes: Task[][] = [];
