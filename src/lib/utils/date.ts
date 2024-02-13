@@ -1,34 +1,40 @@
-export const getDateFromIndex = (index: number, start: number): string => {
-	const current = new Date();
-	current.setDate(current.getDate() + start + index);
-	const weekday = current.toLocaleString('default', { weekday: 'long' });
+export const generateDateRange = (start: number, end: number): Date[] =>
+	Array.from({ length: end - start + 1 }, (_, index) => {
+		const current = new Date();
+		current.setDate(current.getDate() + start + index);
+		return current;
+	});
 
-	return `${weekday[0]} ${current.getDate()}`;
+export const getDateHeaderText = (date: Date): string => {
+	const weekday = date.toLocaleString('default', { weekday: 'long' });
+
+	return `${weekday[0]} ${date.getDate()}`;
 };
 
-export const isIndexToday = (index: number, start: number): boolean => {
-	const current = new Date();
-	current.setDate(current.getDate() + start + index);
-	return current.toDateString() === new Date().toDateString();
+export const getPreviousDay = (date: Date): Date => {
+	const previousDay = new Date(date);
+	previousDay.setDate(previousDay.getDate() - 1);
+	return previousDay;
 };
 
-export const isIndexNextThirtyDays = (
-	index: number,
-	start: number
-): boolean => {
-	const current = new Date();
-	current.setDate(current.getDate() + start + index);
+export const getNextDay = (date: Date): Date => {
+	const nextDay = new Date(date);
+	nextDay.setDate(nextDay.getDate() + 1);
+	return nextDay;
+};
+
+export const isDateToday = (date: Date): boolean =>
+	date.toDateString() === new Date().toDateString();
+
+export const isDateNextThirtyDays = (date: Date): boolean => {
 	const nextThirtyDays = new Date();
 	nextThirtyDays.setDate(nextThirtyDays.getDate() + 30);
 
 	return (
-		current.toDateString() === new Date().toDateString() ||
-		(current <= nextThirtyDays && current > new Date())
+		date.toDateString() === new Date().toDateString() ||
+		(date <= nextThirtyDays && date > new Date())
 	);
 };
 
-export const isIndexWeekend = (index: number, start: number): boolean => {
-	const current = new Date();
-	current.setDate(current.getDate() + start + index);
-	return current.getDay() === 0 || current.getDay() === 6;
-};
+export const isDateWeekend = (current: Date): boolean =>
+	current.getDay() === 0 || current.getDay() === 6;

@@ -1,6 +1,7 @@
 import { get, writable } from 'svelte/store';
 
 import type { Task } from '../types';
+import { authStore } from './auth';
 import { setError } from './errors';
 
 type TasksStore = {
@@ -12,19 +13,26 @@ export const tasksStore = writable<TasksStore>({
 	dateRange: { start: -15, end: 15 },
 });
 
-type FetchTasksArgs = { projectId: string; teamId: string; token: string };
-export const fetchTasks = async ({
-	projectId,
-	teamId,
-	token,
-}: FetchTasksArgs) => {
-	const { dateRange } = get(tasksStore);
+type BaseFetchTasksArgs = {
+	start: number;
+	end: number;
+};
+
+const baseFetchTasks = async ({ start, end }: BaseFetchTasksArgs) => {
+	const auth = get(authStore);
+	if (!auth) {
+		setError(
+			'You are not authenticated and tasks cannot be fetched! Check your local storage or your network!'
+		);
+		return;
+	}
 
 	const fromDate = new Date();
-	fromDate.setDate(fromDate.getDate() + dateRange.start);
+	fromDate.setDate(fromDate.getDate() + start);
 	const untilDate = new Date();
-	untilDate.setDate(untilDate.getDate() + dateRange.end);
+	untilDate.setDate(untilDate.getDate() + end);
 
+	const { projectId, teamId, token } = auth;
 	const since = fromDate.toJSON().slice(0, 10);
 	const until = untilDate.toJSON().slice(0, 10);
 	const url = `https://api.plan.toggl.space/api/v6-rc1/${projectId}/tasks?since=${since}&until=${until}&short=true&team=${teamId}`;
@@ -33,8 +41,34 @@ export const fetchTasks = async ({
 		const tasks: Task[] = await (
 			await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
 		).json();
-		tasksStore.update((prev) => ({ ...prev, tasks: tasks, error: undefined }));
+		tasksStore.set({ dateRange: { start, end }, tasks: tasks });
 	} catch (_) {
 		setError('Failed to fetch tasks. Check your token or your network!');
 	}
+};
+
+export const fetchTasks = async () => {
+	const { dateRange } = get(tasksStore);
+
+	await baseFetchTasks({
+		...dateRange,
+	});
+};
+
+export const fetchPreviousDates = async () => {
+	const { dateRange } = get(tasksStore);
+
+	await baseFetchTasks({
+		start: dateRange.start - 30,
+		end: dateRange.end,
+	});
+};
+
+export const fetchIncomingDates = async () => {
+	const { dateRange } = get(tasksStore);
+
+	await baseFetchTasks({
+		start: dateRange.start,
+		end: dateRange.end + 30,
+	});
 };

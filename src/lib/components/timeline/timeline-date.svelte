@@ -1,23 +1,25 @@
 <script lang="ts">
 	import { twMerge } from 'tailwind-merge';
 
-	import { tasksStore } from '../../stores';
 	import {
-		getDateFromIndex,
-		isIndexNextThirtyDays,
-		isIndexToday,
-		isIndexWeekend,
+		getDateHeaderText,
+		getNextDay,
+		getPreviousDay,
+		isDateNextThirtyDays,
+		isDateToday,
+		isDateWeekend,
 	} from '../../utils';
 
-	export let index: number;
+	export let date: Date;
 
-	const { start } = $tasksStore.dateRange;
-	const isToday = isIndexToday(index, start);
-	const isPrevToday = isIndexToday(index - 1, start);
-	const isNextThirtyDays = !isToday && isIndexNextThirtyDays(index, start);
-	const isNextNotThirtyDays =
-		isIndexNextThirtyDays(index, start) &&
-		!isIndexNextThirtyDays(index + 1, start);
+	const prev = getPreviousDay(date);
+	const next = getNextDay(date);
+
+	const isToday = isDateToday(date);
+	const isPrevToday = isDateToday(prev);
+	const isNextThirtyDays = !isToday && isDateNextThirtyDays(date);
+	const isNextNotThirtyDays = isNextThirtyDays && !isDateNextThirtyDays(next);
+	const isWeekend = isDateWeekend(date);
 	const withDivider =
 		!isToday && !isPrevToday && !isNextThirtyDays && !isNextNotThirtyDays;
 
@@ -37,11 +39,8 @@
 
 <div class={containerClasses}>
 	<div class={classes}>
-		<p
-			class="text-sm font-semibold"
-			class:text-plum-50={isIndexWeekend(index, start)}
-		>
-			{getDateFromIndex(index, start)}
+		<p class="text-sm font-semibold" class:text-plum-50={isWeekend}>
+			{getDateHeaderText(date)}
 		</p>
 	</div>
 </div>

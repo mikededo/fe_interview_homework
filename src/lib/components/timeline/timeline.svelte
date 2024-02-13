@@ -1,33 +1,55 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	// TODO: Refactor this logic
-
 	import TimelineDate from './timeline-date.svelte';
 	import TimelineHeader from './timeline-header.svelte';
 	import {
-		authStore,
+		fetchIncomingDates,
+		fetchPreviousDates,
 		fetchTasks,
 		loadAuthData,
 		tasksStore,
 	} from '../../stores';
-	import { isIndexWeekend } from '../../utils';
+	import { generateDateRange, isDateWeekend } from '../../utils';
 
 	let swimlaneScrollable: HTMLDivElement;
-
-	const length = $tasksStore.dateRange.end - $tasksStore.dateRange.start;
-
-	onMount(async () => {
-		loadAuthData();
-		if (!$authStore) {
+	const onSwimlaneScroll = (e: Event) => {
+		if (!e || !e.target) {
 			return;
 		}
 
+		const target = e.target as HTMLDivElement;
+		if (target.scrollLeft === target.scrollWidth - target.clientWidth) {
+			fetchIncomingDates();
+		} else if (target.scrollLeft === 0) {
+			fetchPreviousDates().then(() => {
+				// Make sure the scroll position is persisted so the user does not lose sight
+				// This is only required for rthe left scroll
+				target.scrollLeft = 54 * 30;
+			});
+		}
+	};
+
+	$: dates = generateDateRange(
+		$tasksStore.dateRange.start,
+		$tasksStore.dateRange.end
+	);
+
+	onMount(() => {
+		loadAuthData();
 		setTimeout(() => {
-			swimlaneScrollable.scrollLeft =
+			const left =
 				(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
+			swimlaneScrollable.scrollTo({ left, behavior: 'smooth' });
 		}, 0);
-		fetchTasks($authStore);
+
+		fetchTasks();
+
+		swimlaneScrollable.addEventListener('scroll', onSwimlaneScroll);
+
+		return () => {
+			swimlaneScrollable.removeEventListener('scroll', onSwimlaneScroll);
+		};
 	});
 </script>
 
@@ -40,16 +62,18 @@
 		bg-background"
 	>
 		<div class="no-wrap flex h-8 w-full transition-all">
-			{#each { length } as _, i}
-				<TimelineDate index={i} />
+			<!-- TODO: Virtualize list-->
+			{#each dates as date (date)}
+				<TimelineDate {date} />
 			{/each}
 		</div>
 
 		<div class="no-wrap flex h-full w-full">
-			{#each { length } as _, i}
+			<!-- TODO: Virtualize list-->
+			{#each dates as date (date)}
 				<div
 					class="h-full w-[54px] shrink-0 border-r"
-					class:bg-plum-5={isIndexWeekend(i, $tasksStore.dateRange.start)}
+					class:bg-plum-5={isDateWeekend(date)}
 				/>
 			{/each}
 		</div>
