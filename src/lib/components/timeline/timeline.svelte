@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 
-	import TimelineDate from './timeline-date.svelte';
+	import TimelineColumnHeader from './timeline-column-header.svelte';
+	import TimelineColumn from './timeline-column.svelte';
 	import TimelineHeader from './timeline-header.svelte';
 	import TimelinePool from './timeline-pool.svelte';
 	import { CELL_COUNT, CELL_WIDTH } from '../../config';
@@ -13,7 +14,7 @@
 		showAuthDialog,
 		tasksStore,
 	} from '../../stores';
-	import { generateDateRange, isDateWeekend } from '../../utils';
+	import { generateDateRange } from '../../utils';
 
 	let swimlaneScrollable: HTMLDivElement;
 	const onSwimlaneScroll = (e: Event) => {
@@ -66,23 +67,8 @@
 		class="relative flex h-[calc(100%_-_var(--header-height))] w-full flex-col
 		overflow-auto bg-background"
 	>
-		<div class="no-wrap flex h-8 w-full transition-all">
-			<!-- TODO: Virtualize list-->
-			{#each dates as date (date)}
-				<TimelineDate {date} />
-			{/each}
-		</div>
-
-		<div class="no-wrap flex h-full w-full">
-			<!-- TODO: Virtualize list-->
-			{#each dates as date (date)}
-				<div
-					class="h-full w-cell shrink-0 border-r"
-					class:bg-plum-5={isDateWeekend(date)}
-				/>
-			{/each}
-		</div>
-
+		<TimelineColumnHeader {dates} />
+		<TimelineColumn {dates} />
 		<TimelinePool {dates} />
 	</div>
 </section>
