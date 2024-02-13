@@ -5,6 +5,7 @@
 * {
 	--sidenav-width: 256px;
 	--header-height: 96px;
+	--cell-width: 54px;
 }
 
 /* Extracted from Toggl site */

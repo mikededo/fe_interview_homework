@@ -3,6 +3,8 @@
 
 	import TimelineDate from './timeline-date.svelte';
 	import TimelineHeader from './timeline-header.svelte';
+	import TimelineTask from './timeline-task.svelte';
+	import { CELL_COUNT, CELL_WIDTH } from '../../config';
 	import {
 		fetchIncomingDates,
 		fetchPreviousDates,
@@ -25,11 +27,12 @@
 			fetchPreviousDates().then(() => {
 				// Make sure the scroll position is persisted so the user does not lose sight
 				// This is only required for rthe left scroll
-				target.scrollLeft = 54 * 30;
+				target.scrollLeft = CELL_WIDTH * CELL_COUNT;
 			});
 		}
 	};
 
+	$: tasks = $tasksStore.tasks;
 	$: dates = generateDateRange(
 		$tasksStore.dateRange.start,
 		$tasksStore.dateRange.end
@@ -58,8 +61,8 @@
 	<TimelineHeader />
 	<div
 		bind:this={swimlaneScrollable}
-		class="flex h-[calc(100%_-_var(--header-height))] w-full flex-col overflow-auto
-		bg-background"
+		class="relative flex h-[calc(100%_-_var(--header-height))] w-full flex-col
+		overflow-auto bg-background"
 	>
 		<div class="no-wrap flex h-8 w-full transition-all">
 			<!-- TODO: Virtualize list-->
@@ -72,10 +75,21 @@
 			<!-- TODO: Virtualize list-->
 			{#each dates as date (date)}
 				<div
-					class="h-full w-[54px] shrink-0 border-r"
+					class="h-full w-cell shrink-0 border-r"
 					class:bg-plum-5={isDateWeekend(date)}
 				/>
 			{/each}
+		</div>
+
+		<div
+			class="absolute bottom-4 left-0 top-12 overflow-hidden"
+			style="width: {dates.length * CELL_WIDTH}px"
+		>
+			{#if tasks}
+				{#each tasks as task (task.id)}
+					<TimelineTask {task} />
+				{/each}
+			{/if}
 		</div>
 	</div>
 </section>

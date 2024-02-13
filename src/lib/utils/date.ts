@@ -1,3 +1,5 @@
+import { CELL_COUNT } from '../config';
+
 export const generateDateRange = (start: number, end: number): Date[] =>
 	Array.from({ length: end - start + 1 }, (_, index) => {
 		const current = new Date();
@@ -28,7 +30,7 @@ export const isDateToday = (date: Date): boolean =>
 
 export const isDateNextThirtyDays = (date: Date): boolean => {
 	const nextThirtyDays = new Date();
-	nextThirtyDays.setDate(nextThirtyDays.getDate() + 30);
+	nextThirtyDays.setDate(nextThirtyDays.getDate() + CELL_COUNT);
 
 	return (
 		date.toDateString() === new Date().toDateString() ||
@@ -38,3 +40,13 @@ export const isDateNextThirtyDays = (date: Date): boolean => {
 
 export const isDateWeekend = (current: Date): boolean =>
 	current.getDay() === 0 || current.getDay() === 6;
+
+export const getDaysBetweenDates = (startDate: Date, endDate: Date): number => {
+	// Reomve the hours to avoid partial days
+	const start = new Date(startDate);
+	start.setHours(0, 0, 0, 0);
+	const end = new Date(endDate);
+	end.setHours(0, 0, 0, 0);
+
+	return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+};

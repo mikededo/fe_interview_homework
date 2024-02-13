@@ -1,5 +1,6 @@
 import { get, writable } from 'svelte/store';
 
+import { CELL_COUNT } from '../config';
 import type { Task } from '../types';
 import { authStore } from './auth';
 import { setError } from './errors';
@@ -59,7 +60,7 @@ export const fetchPreviousDates = async () => {
 	const { dateRange } = get(tasksStore);
 
 	await baseFetchTasks({
-		start: dateRange.start - 30,
+		start: dateRange.start - CELL_COUNT,
 		end: dateRange.end,
 	});
 };
@@ -69,6 +70,6 @@ export const fetchIncomingDates = async () => {
 
 	await baseFetchTasks({
 		start: dateRange.start,
-		end: dateRange.end + 30,
+		end: dateRange.end + CELL_COUNT,
 	});
 };
