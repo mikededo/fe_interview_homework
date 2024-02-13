@@ -15,6 +15,7 @@ type TasksStore = {
 export const tasksStore = writable<TasksStore>({
 	dateRange: { start: -15, end: 30 },
 });
+export const taskEditorStore = writable<Task | null>(null);
 
 type BaseFetchTasksArgs = {
 	start: number;

@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 
 	import { CELL_WIDTH, LANE_HEIGHT, POOL_PADDING, TASK_MARGIN } from '../../config';
-	import { tasksStore, updateTask } from '../../stores';
+	import { taskEditorStore, tasksStore, updateTask } from '../../stores';
 	import type { Task } from '../../types';
 	import { getDaysBetweenDates } from '../../utils';
 
@@ -70,6 +70,10 @@
 		draggedDistance = { initial: 0, dragged: 0 };
 	};
 
+	const handleOnClick = () => {
+		taskEditorStore.set(task);
+	};
+
 	onMount(() => {
 		document.addEventListener('mousemove', handleOnMouseMove);
 		document.addEventListener('mouseup', handleOnMouseUp);
@@ -119,6 +123,7 @@
 	style="left: {left}px; width: {width}px; top: {top}px"
 	on:mousemove={handleOnMouseMove}
 	on:mousedown={handleOnMouseDown}
+	on:click={handleOnClick}
 >
 	<div class:pointer-events-none={isResizing}>
 		<p class="text-sm font-semibold text-white">
