@@ -1,16 +1,21 @@
 <script lang="ts">
-	// TODO: Refactor this logic
 	import { onMount } from 'svelte';
 
+	// TODO: Refactor this logic
+
+	import TimelineDate from './timeline-date.svelte';
 	import TimelineHeader from './timeline-header.svelte';
-	import { authStore, loadAuthData } from '../../stores';
-	import type { Task } from '../../types';
+	import {
+		authStore,
+		fetchTasks,
+		loadAuthData,
+		tasksStore,
+	} from '../../stores';
+	import { isIndexWeekend } from '../../utils';
 
 	let swimlaneScrollable: HTMLDivElement;
-	let tasks: Task[];
-	let error: unknown;
-	let prevCount = -15;
-	let nextCount = 15;
+
+	const length = $tasksStore.dateRange.end - $tasksStore.dateRange.start;
 
 	onMount(async () => {
 		loadAuthData();
@@ -18,23 +23,7 @@
 			return;
 		}
 
-		const prevFifteen = new Date();
-		prevFifteen.setDate(prevFifteen.getDate() + prevCount);
-		const nextFifteen = new Date();
-		nextFifteen.setDate(nextFifteen.getDate() + nextCount);
-
-		const since = prevFifteen.toJSON().slice(0, 10);
-		const until = nextFifteen.toJSON().slice(0, 10);
-		const { projectId, teamId, token } = $authStore;
-		const url = `https://api.plan.toggl.space/api/v6-rc1/${projectId}/tasks?since=${since}&until=${until}&short=true&team=${teamId}`;
-
-		try {
-			tasks = await (
-				await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-			).json();
-		} catch (e) {
-			error = e;
-		}
+		fetchTasks($authStore);
 
 		setTimeout(() => {
 			swimlaneScrollable.scrollLeft =
@@ -51,19 +40,22 @@
 		class="flex h-[calc(100%_-_var(--header-height))] w-full flex-col overflow-auto
 		bg-background"
 	>
-		{#if tasks}
-			<div class="no-wrap flex h-6 w-full divide-x transition-all">
-				{#each { length: nextCount - prevCount } as _}
-					<div class="h-full w-[54px] shrink-0 border-b" />
+		{#if $tasksStore.tasks}
+			<div class="no-wrap flex h-8 w-full transition-all">
+				{#each { length } as _, i}
+					<TimelineDate index={i} />
 				{/each}
 			</div>
 
 			<div class="no-wrap flex h-full w-full">
-				{#each { length: nextCount - prevCount } as _}
-					<div class="h-full w-[54px] shrink-0 odd:bg-plum-5" />
+				{#each { length } as _, i}
+					<div
+						class="h-full w-[54px] shrink-0 border-r"
+						class:bg-plum-5={isIndexWeekend(i, $tasksStore.dateRange.start)}
+					/>
 				{/each}
 			</div>
-		{:else if error}
+		{:else if $tasksStore.error}
 			<!-- TODO: Add error styling -->
 			<div>An error ocurred</div>
 		{/if}
