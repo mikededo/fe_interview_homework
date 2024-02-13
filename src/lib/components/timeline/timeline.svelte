@@ -23,12 +23,12 @@
 			return;
 		}
 
-		fetchTasks($authStore);
-
-		setTimeout(() => {
-			swimlaneScrollable.scrollLeft =
-				(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
-		}, 0);
+		fetchTasks($authStore).then(() => {
+			setTimeout(() => {
+				swimlaneScrollable.scrollLeft =
+					(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
+			}, 0);
+		});
 	});
 </script>
 
