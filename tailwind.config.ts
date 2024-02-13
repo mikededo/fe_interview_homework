@@ -36,6 +36,7 @@ export default {
 				'sidenav-w': 'var(--sidenav-width)',
 				'header-h': 'var(--header-height)',
 				cell: 'var(--cell-width)',
+				'task-h': 'var(--task-height)',
 			},
 			colors: {
 				background: { DEFAULT: 'var(--color-bg)' },

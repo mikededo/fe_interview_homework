@@ -2,21 +2,59 @@ import { get, writable } from 'svelte/store';
 
 import { CELL_COUNT } from '../config';
 import type { Task } from '../types';
+import { doDateRangesOverlap } from '../utils';
 import { authStore } from './auth';
 import { setError } from './errors';
 
 type TasksStore = {
 	dateRange: { start: number; end: number };
 	tasks?: Task[];
+	swimlanes?: Task[][];
 };
 
 export const tasksStore = writable<TasksStore>({
-	dateRange: { start: -15, end: 15 },
+	dateRange: { start: -15, end: 30 },
 });
 
 type BaseFetchTasksArgs = {
 	start: number;
 	end: number;
+};
+
+const doTasksOverlap = (a: Task, b: Task): boolean =>
+	doDateRangesOverlap(
+		[new Date(a.start_date), new Date(a.end_date)],
+		[new Date(b.start_date), new Date(b.end_date)]
+	);
+
+const updateTasksStore = (tasks: Task[]): Task[][] => {
+	const swimlanes: Task[][] = [];
+	const sorted = [...tasks].sort((a, b) => {
+		// In case dates are equal, we sort by weight
+		if (a.start_date === b.start_date) {
+			return a.weight > b.weight ? 1 : -1;
+		}
+
+		return a.start_date > b.start_date ? 1 : -1;
+	});
+
+	sorted.forEach((task) => {
+		const availableLaneIndex = swimlanes.findIndex((lane) => {
+			const doesCollapse = lane.some((laneTask) =>
+				doTasksOverlap(task, laneTask)
+			);
+			// console.log({ task, doesCollapse });
+			return !doesCollapse;
+		});
+
+		if (availableLaneIndex === -1) {
+			swimlanes.push([task]);
+		} else {
+			swimlanes[availableLaneIndex].push(task);
+		}
+	});
+
+	return swimlanes;
 };
 
 const baseFetchTasks = async ({ start, end }: BaseFetchTasksArgs) => {
@@ -42,7 +80,11 @@ const baseFetchTasks = async ({ start, end }: BaseFetchTasksArgs) => {
 		const tasks: Task[] = await (
 			await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
 		).json();
-		tasksStore.set({ dateRange: { start, end }, tasks: tasks });
+		tasksStore.set({
+			dateRange: { start, end },
+			tasks: tasks,
+			swimlanes: updateTasksStore(tasks),
+		});
 	} catch (_) {
 		setError('Failed to fetch tasks. Check your token or your network!');
 	}

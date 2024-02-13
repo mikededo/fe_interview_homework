@@ -13,7 +13,7 @@ export type Task = {
 	name: string;
 	start_time: null;
 	task_type: string;
-	start_date: Date;
+	start_date: string;
 	original_repeated_task_id: null;
 	parent_id: null;
 	total_checklist_items_count: number;
@@ -28,13 +28,13 @@ export type Task = {
 	color_id: null;
 	plan_id: number;
 	comments: any[];
-	created_at: Date;
+	created_at: string;
 	done_checklist_items_count: number;
 	plan_status_id: number;
 	color: null;
 	tracked: boolean;
-	end_date: Date;
-	updated_at: Date;
+	end_date: string;
+	updated_at: string;
 	updated_by: number;
 	has_notes: boolean;
 	estimated_minutes: number;

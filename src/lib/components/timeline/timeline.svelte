@@ -3,7 +3,7 @@
 
 	import TimelineDate from './timeline-date.svelte';
 	import TimelineHeader from './timeline-header.svelte';
-	import TimelineTask from './timeline-task.svelte';
+	import TimelinePool from './timeline-pool.svelte';
 	import { CELL_COUNT, CELL_WIDTH } from '../../config';
 	import {
 		fetchIncomingDates,
@@ -32,7 +32,6 @@
 		}
 	};
 
-	$: tasks = $tasksStore.tasks;
 	$: dates = generateDateRange(
 		$tasksStore.dateRange.start,
 		$tasksStore.dateRange.end
@@ -43,7 +42,7 @@
 		setTimeout(() => {
 			const left =
 				(swimlaneScrollable.scrollWidth - swimlaneScrollable.clientWidth) / 2;
-			swimlaneScrollable.scrollTo({ left, behavior: 'smooth' });
+			swimlaneScrollable.scrollTo({ left, behavior: 'instant' });
 		}, 0);
 
 		fetchTasks();
@@ -81,15 +80,6 @@
 			{/each}
 		</div>
 
-		<div
-			class="absolute bottom-4 left-0 top-12 overflow-hidden"
-			style="width: {dates.length * CELL_WIDTH}px"
-		>
-			{#if tasks}
-				{#each tasks as task (task.id)}
-					<TimelineTask {task} />
-				{/each}
-			{/if}
-		</div>
+		<TimelinePool {dates} />
 	</div>
 </section>

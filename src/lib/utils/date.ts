@@ -50,3 +50,12 @@ export const getDaysBetweenDates = (startDate: Date, endDate: Date): number => {
 
 	return Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
 };
+
+export const doDateRangesOverlap = (a: [Date, Date], b: [Date, Date]) => {
+	const aStart = a[0].getTime();
+	const aEnd = a[1].getTime();
+	const bStart = b[0].getTime();
+	const bEnd = b[1].getTime();
+
+	return (aStart < bEnd && aEnd > bStart) || (bStart < aEnd && bEnd > aStart);
+};
