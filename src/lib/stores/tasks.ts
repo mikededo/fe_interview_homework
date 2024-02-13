@@ -30,8 +30,7 @@ const doTasksOverlap = (a: Task, b: Task): boolean =>
 const updateTasksStore = (tasks: Task[]): Task[][] => {
 	const swimlanes: Task[][] = [];
 	const sorted = [...tasks].sort((a, b) => {
-		// In case dates are equal, we sort by weight
-		if (a.start_date === b.start_date) {
+		if (a.weight !== b.weight) {
 			return a.weight > b.weight ? 1 : -1;
 		}
 
@@ -112,5 +111,25 @@ export const fetchIncomingDates = async () => {
 	await baseFetchTasks({
 		start: dateRange.start,
 		end: dateRange.end + CELL_COUNT,
+	});
+};
+
+export const updateTask = (newTask: Task) => {
+	// In order to keep it simple, we will
+	// - Update the list form the tasks list
+	// - Recalculate the swimlanes
+	tasksStore.update((store) => {
+		if (!store.tasks) {
+			return store;
+		}
+
+		const updatedTasks = store.tasks.map((task) =>
+			task.id === newTask.id ? newTask : task
+		);
+		return {
+			...store,
+			tasks: updatedTasks,
+			swimlanes: updateTasksStore(updatedTasks),
+		};
 	});
 };
