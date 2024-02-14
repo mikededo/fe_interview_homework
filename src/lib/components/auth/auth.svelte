@@ -5,10 +5,9 @@
 	import { LocalStorageKeys } from '../../config';
 	import { fetchTasks, loadAuthData, showAuthDialog } from '../../stores';
 	import { LocalStorage } from '../../utils';
+	import { Input } from '../input';
 
 	// TODO: Refactor into input component
-	const inputClasses =
-		'rounded-md text-sm border p-2 font-mono ring ring-transparent transition-all focus:outline-none focus:ring-2 focus:ring-purple-ui focus:ring-offset-2 focus:ring-offset-white';
 	const InputFields = {
 		projectId: 'projectId',
 		teamId: 'teamId',
@@ -52,8 +51,8 @@
 			<form on:submit|preventDefault={handleOnSubmit} class="flex flex-col gap-4">
 				<div class="flex flex-col gap-2">
 					<label for="projectId" class="text-sm">Project ID</label>
-					<input
-						class={inputClasses}
+					<Input
+						class="font-mono"
 						id={InputFields.projectId}
 						name={InputFields.projectId}
 						placeholder="1234567"
@@ -64,8 +63,8 @@
 				</div>
 				<div class="flex flex-col gap-2">
 					<label for="teamId" class="text-sm">Team ID</label>
-					<input
-						class={inputClasses}
+					<Input
+						class="font-mono"
 						id={InputFields.teamId}
 						name={InputFields.teamId}
 						placeholder="1234567"
@@ -76,8 +75,8 @@
 				</div>
 				<div class="flex flex-col gap-2">
 					<label for="token" class="text-sm">Token</label>
-					<input
-						class={inputClasses}
+					<Input
+						class="font-mono"
 						id={InputFields.token}
 						name={InputFields.token}
 						placeholder="JWT Authentication token"

@@ -30,7 +30,7 @@
 		isNextNotThirtyDays && 'rounded-r'
 	);
 	const containerClasses = twMerge(
-		'h-full w-cell flex items-center shrink-0 border-b',
+		'h-full w-cell-w flex items-center shrink-0 border-b',
 		isNextThirtyDays ? 'py-0.5' : 'p-0.5',
 		withDivider && 'border-r'
 	);

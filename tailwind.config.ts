@@ -35,8 +35,9 @@ export default {
 			spacing: {
 				'sidenav-w': 'var(--sidenav-width)',
 				'header-h': 'var(--header-height)',
-				cell: 'var(--cell-width)',
+				'cell-w': 'var(--cell-width)',
 				'task-h': 'var(--task-height)',
+				'editor-w': 'var(--editor-width)',
 			},
 			colors: {
 				background: { DEFAULT: 'var(--color-bg)' },
