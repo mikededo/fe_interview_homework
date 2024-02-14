@@ -59,3 +59,16 @@ export const doDateRangesOverlap = (a: [Date, Date], b: [Date, Date]) => {
 
 	return (aStart < bEnd && aEnd > bStart) || (bStart < aEnd && bEnd > aStart);
 };
+
+export const getDurationFromMinutes = (minutes: number) => {
+	const days = Math.floor(minutes / 60 / 24);
+	const hours = Math.floor((minutes / 60) % 24);
+	const remainingMinutes = minutes % 60;
+	return [
+		days > 0 ? `${days}d` : '',
+		hours > 0 ? `${hours}h` : '',
+		remainingMinutes > 0 ? `${remainingMinutes}m` : '',
+	]
+		.filter(Boolean)
+		.join(' ');
+};

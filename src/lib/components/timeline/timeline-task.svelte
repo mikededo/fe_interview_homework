@@ -5,7 +5,7 @@
 	import { CELL_WIDTH, LANE_HEIGHT, POOL_PADDING, TASK_MARGIN } from '../../config';
 	import { taskEditorStore, tasksStore, updateTask } from '../../stores';
 	import type { Task } from '../../types';
-	import { getDaysBetweenDates } from '../../utils';
+	import { getDaysBetweenDates, getDurationFromMinutes } from '../../utils';
 
 	export let task: Task;
 	export let lane: number;
@@ -136,20 +136,6 @@
 	// Adding one as the range is inclusive
 	$: width = (datesDiff + 1) * CELL_WIDTH - TASK_MARGIN * 2 + (!isDragging ? increaseRight : 0);
 	$: top = POOL_PADDING + lane * LANE_HEIGHT;
-
-	const getTaskEstimatedMinutes = () => {
-		const minutes = task.daily_estimated_minutes;
-		const days = Math.floor(minutes / 60 / 24);
-		const hours = Math.floor((minutes / 60) % 24);
-		const remainingMinutes = minutes % 60;
-		return [
-			days > 0 ? `${days}d` : '',
-			hours > 0 ? `${hours}h` : '',
-			remainingMinutes > 0 ? `${remainingMinutes}m` : '',
-		]
-			.filter(Boolean)
-			.join(' ');
-	};
 </script>
 
 <style>
@@ -176,11 +162,13 @@
 >
 	<div class:pointer-events-none={isResizing}>
 		<p class="text-sm font-semibold text-white">
-			{width} | {draggedDistance.dragged} | {isDragging} | {isResizing}
+			{task.name}
 		</p>
 		<div class="flex items-center justify-between">
 			<p class="line-clamp-1 text-xs text-white/60">{task.name}</p>
-			<p class="line-clamp-1 text-xs font-semibold text-white">{getTaskEstimatedMinutes()} daily</p>
+			<p class="line-clamp-1 text-xs font-semibold text-white">
+				{getDurationFromMinutes(task.daily_estimated_minutes)} daily
+			</p>
 		</div>
 	</div>
 </div>
