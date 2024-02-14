@@ -102,7 +102,6 @@
 			isResizing = false;
 			isDragging = false;
 			draggedDistance = { initial: 0, dragged: 0 };
-			return;
 		}
 
 		taskEditorStore.set(task);
