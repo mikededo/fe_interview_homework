@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import { scale } from 'svelte/transition';
 
 	import { CELL_WIDTH, LANE_HEIGHT, POOL_PADDING, TASK_MARGIN } from '../../config';
 	import { taskEditorStore, tasksStore, updateTask } from '../../stores';
@@ -19,20 +20,21 @@
 	// Since we are using document events, we need to ensure that the events are coming from
 	// the current element or one of its children
 	const isCurrentElement = (event: Event) =>
-		event.target !== taskElement && !taskElement.contains(event.target as Node);
+		event.target === taskElement || taskElement.contains(event.target as Node);
 
 	const handleOnMouseMove = (event: MouseEvent) => {
-		if (!isCurrentElement(event)) {
-			return;
-		}
-
 		if (isResizing || isDragging) {
+			// console.log(event.clientX, draggedDistance.initial, draggedDistance.dragged);
 			draggedDistance = {
 				...draggedDistance,
 				dragged: Math.floor((event.clientX - draggedDistance.initial) / CELL_WIDTH),
 			};
 			event.preventDefault();
 
+			return;
+		}
+
+		if (!isCurrentElement(event)) {
 			return;
 		}
 
@@ -47,18 +49,17 @@
 	};
 
 	const handleOnMouseDown = (event: MouseEvent) => {
+		if (!isCurrentElement(event)) {
+			return;
+		}
+
 		isResizing = isLeftEdge || isRightEdge;
 		isDragging = !isResizing;
 		draggedDistance.initial = event.clientX;
 	};
 
 	const handleOnMouseUp = (event: MouseEvent) => {
-		if (!isCurrentElement(event)) {
-			return;
-		}
-
 		if (!isResizing && !isDragging) {
-			taskEditorStore.set(task);
 			return;
 		}
 
@@ -80,9 +81,31 @@
 		task.end_date = newEndDate.toISOString().split('T')[0];
 		updateTask(task);
 
-		isResizing = false;
-		isDragging = false;
-		draggedDistance = { initial: 0, dragged: 0 };
+		// If the mouse up is over the task, we need to reset the state
+		if (!isCurrentElement(event)) {
+			isResizing = false;
+			isDragging = false;
+			draggedDistance = { initial: 0, dragged: 0 };
+		}
+	};
+
+	const handleOnClick = (event: MouseEvent) => {
+		if (!isCurrentElement(event)) {
+			return;
+		}
+
+		// As specified in mdn docs https://developer.mozilla.org/en-US/docs/Web/API/Element/click_event,
+		// the click event occurs after the mouseup. This means that by resetting the state in mouseup, by the
+		// time the click handler executes, it will not know if it was dragging or resizing, meaning that it
+		// would open the drawer (not a valid use casee)
+		if (isResizing || isDragging) {
+			isResizing = false;
+			isDragging = false;
+			draggedDistance = { initial: 0, dragged: 0 };
+			return;
+		}
+
+		taskEditorStore.set(task);
 	};
 
 	onMount(() => {
@@ -139,18 +162,21 @@
 <div
 	bind:this={taskElement}
 	role="presentation"
-	class="transitions absolute ml-0.5 h-task-h overflow-hidden rounded-sm bg-purple-ui px-2 py-1.5 transition-all ease-in-out hover:shadow-md hover:shadow-purple-60"
+	class="transitions absolute ml-0.5 h-task-h overflow-hidden rounded-sm bg-purple-ui px-2 py-1.5 transition-shadow ease-in-out hover:shadow-md hover:shadow-purple-60"
 	class:hover:cursor-pointer={!isDragging && !isLeftEdge && !isRightEdge}
 	class:cursor-grab={isDragging}
 	class:cursor-ew-resize={isLeftEdge || isRightEdge}
 	class:drop-shadow-xl={isResizing}
+	class:z-50={isDragging || isResizing}
 	style="left: {left}px; width: {width}px; top: {top}px"
 	on:mousemove={handleOnMouseMove}
 	on:mousedown={handleOnMouseDown}
+	on:click={handleOnClick}
+	transition:scale={{ duration: isDragging || isResizing ? 0 : 250 }}
 >
 	<div class:pointer-events-none={isResizing}>
 		<p class="text-sm font-semibold text-white">
-			{task.name}
+			{width} | {draggedDistance.dragged} | {isDragging} | {isResizing}
 		</p>
 		<div class="flex items-center justify-between">
 			<p class="line-clamp-1 text-xs text-white/60">{task.name}</p>

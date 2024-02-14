@@ -12,7 +12,7 @@
 
 {#if swimlanes}
 	<div
-		class="absolute left-0 top-12 overflow-hidden bg-gray-300/25"
+		class="absolute left-0 top-12 overflow-hidden bg-gray-300/25 transition-all"
 		style="width: {width}px; height: {height}px"
 	>
 		{#each swimlanes as swimlane, i (i)}
