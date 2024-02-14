@@ -166,9 +166,11 @@
 		</p>
 		<div class="flex items-center justify-between">
 			<p class="line-clamp-1 text-xs text-white/60">{task.name}</p>
-			<p class="line-clamp-1 text-xs font-semibold text-white">
-				{getDurationFromMinutes(task.daily_estimated_minutes)} daily
-			</p>
+			{#if task.daily_estimated_minutes}
+				<p class="line-clamp-1 text-xs font-semibold text-white">
+					{getDurationFromMinutes(task.daily_estimated_minutes)} daily
+				</p>
+			{/if}
 		</div>
 	</div>
 </div>
