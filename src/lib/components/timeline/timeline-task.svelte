@@ -87,6 +87,7 @@
 	const today = new Date();
 	$: startDate = new Date(task.start_date);
 	$: endDate = new Date(task.end_date);
+	$: datesDiff = getDaysBetweenDates(startDate, endDate);
 	$: startDiff = getDaysBetweenDates(today, startDate);
 	$: start = startDiff - $tasksStore.dateRange.start;
 
@@ -99,10 +100,7 @@
 		(start + (isDragging ? draggedDistance.dragged : 0)) * CELL_WIDTH +
 		(!isDragging ? increaseLeft : 0);
 	// Adding one as the range is inclusive
-	$: width =
-		(getDaysBetweenDates(startDate, endDate) + 1) * CELL_WIDTH -
-		TASK_MARGIN * 2 +
-		(!isDragging ? increaseRight : 0);
+	$: width = (datesDiff + 1) * CELL_WIDTH - TASK_MARGIN * 2 + (!isDragging ? increaseRight : 0);
 	$: top = POOL_PADDING + lane * LANE_HEIGHT;
 </script>
 

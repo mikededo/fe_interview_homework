@@ -11,7 +11,6 @@
 		fetchPreviousDates,
 		fetchTasks,
 		loadAuthData,
-		showAuthDialog,
 		tasksStore,
 	} from '../../stores';
 	import { generateDateRange } from '../../utils';
@@ -43,9 +42,7 @@
 			swimlaneScrollable.scrollTo({ left, behavior: 'instant' });
 		}, 0);
 
-		fetchTasks().catch(() => {
-			showAuthDialog.set(true);
-		});
+		fetchTasks();
 
 		swimlaneScrollable.addEventListener('scroll', onSwimlaneScroll);
 

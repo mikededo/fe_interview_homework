@@ -1,6 +1,6 @@
 import { get, writable } from 'svelte/store';
 
-import { authStore } from './auth';
+import { authStore, showAuthDialog } from './auth';
 import { setError } from './errors';
 import { CELL_COUNT } from '../config';
 import type { Task } from '../types';
@@ -78,9 +78,13 @@ const baseFetchTasks = async ({ start, end }: BaseFetchTasksArgs) => {
 	const url = `https://api.plan.toggl.space/api/v6-rc1/${projectId}/tasks?since=${since}&until=${until}&short=true&team=${teamId}`;
 
 	try {
-		const tasks: Task[] = await (
-			await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
-		).json();
+		const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+		// Check if error is due to authentication issues
+		if (!res.ok && res.status === 401) {
+			showAuthDialog.set(true);
+		}
+
+		const tasks: Task[] = await res.json();
 		tasksStore.set({
 			dateRange: { start, end },
 			tasks: tasks,
