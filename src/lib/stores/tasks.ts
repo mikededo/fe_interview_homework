@@ -33,7 +33,7 @@ const doTasksOverlap = (a: Task, b: Task): boolean => {
 };
 
 const updateTasksStore = (tasks: Task[]): Task[][] => {
-	const swimlanes: Task[][] = [];
+	const swimlanes: Task[][] = [[]];
 	const sorted = [...tasks].sort((a, b) => {
 		if (a.weight !== b.weight) {
 			return a.weight > b.weight ? 1 : -1;
@@ -43,15 +43,21 @@ const updateTasksStore = (tasks: Task[]): Task[][] => {
 	});
 
 	sorted.forEach((task) => {
-		const availableLaneIndex = swimlanes.findIndex((lane) => {
-			const doesCollapse = lane.some((laneTask) => doTasksOverlap(task, laneTask));
-			return !doesCollapse;
+		// Since we are iterating through the tasks sorted by weight, we need to check the last swimlane
+		// in which they do not overlap
+		let lastCollisionIndex = 0;
+		swimlanes.forEach((lane, i) => {
+			lane.forEach((laneTask) => {
+				if (doTasksOverlap(task, laneTask)) {
+					lastCollisionIndex = i + 1;
+				}
+			});
 		});
 
-		if (availableLaneIndex === -1) {
-			swimlanes.push([task]);
+		if (lastCollisionIndex < swimlanes.length) {
+			swimlanes[lastCollisionIndex].push(task);
 		} else {
-			swimlanes[availableLaneIndex].push(task);
+			swimlanes.push([task]);
 		}
 	});
 
