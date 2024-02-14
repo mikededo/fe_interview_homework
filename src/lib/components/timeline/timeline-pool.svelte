@@ -15,7 +15,7 @@
 		class="absolute left-0 top-12 overflow-hidden bg-gray-300/25"
 		style="width: {width}px; height: {height}px"
 	>
-		{#each swimlanes as swimlane, i}
+		{#each swimlanes as swimlane, i (i)}
 			{#each swimlane as task (task.id)}
 				<TimelineTask {task} lane={i} />
 			{/each}

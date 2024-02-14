@@ -9,13 +9,23 @@
 	export let task: Task;
 	export let lane: number;
 
+	let taskElement: HTMLDivElement;
 	let isResizing = false;
 	let isDragging = false;
 	let draggedDistance = { initial: 0, dragged: 0 };
 	let isLeftEdge = false;
 	let isRightEdge = false;
 
+	// Since we are using document events, we need to ensure that the events are coming from
+	// the current element or one of its children
+	const isCurrentElement = (event: Event) =>
+		event.target !== taskElement && !taskElement.contains(event.target as Node);
+
 	const handleOnMouseMove = (event: MouseEvent) => {
+		if (!isCurrentElement(event)) {
+			return;
+		}
+
 		if (isResizing || isDragging) {
 			draggedDistance = {
 				...draggedDistance,
@@ -36,14 +46,19 @@
 		isRightEdge = left + width - clientX < 5;
 	};
 
-	const handleOnMouseDown = (e: MouseEvent) => {
+	const handleOnMouseDown = (event: MouseEvent) => {
 		isResizing = isLeftEdge || isRightEdge;
 		isDragging = !isResizing;
-		draggedDistance.initial = e.clientX;
+		draggedDistance.initial = event.clientX;
 	};
 
-	const handleOnMouseUp = () => {
+	const handleOnMouseUp = (event: MouseEvent) => {
+		if (!isCurrentElement(event)) {
+			return;
+		}
+
 		if (!isResizing && !isDragging) {
+			taskEditorStore.set(task);
 			return;
 		}
 
@@ -68,10 +83,6 @@
 		isResizing = false;
 		isDragging = false;
 		draggedDistance = { initial: 0, dragged: 0 };
-	};
-
-	const handleOnClick = () => {
-		taskEditorStore.set(task);
 	};
 
 	onMount(() => {
@@ -102,6 +113,20 @@
 	// Adding one as the range is inclusive
 	$: width = (datesDiff + 1) * CELL_WIDTH - TASK_MARGIN * 2 + (!isDragging ? increaseRight : 0);
 	$: top = POOL_PADDING + lane * LANE_HEIGHT;
+
+	const getTaskEstimatedMinutes = () => {
+		const minutes = task.daily_estimated_minutes;
+		const days = Math.floor(minutes / 60 / 24);
+		const hours = Math.floor((minutes / 60) % 24);
+		const remainingMinutes = minutes % 60;
+		return [
+			days > 0 ? `${days}d` : '',
+			hours > 0 ? `${hours}h` : '',
+			remainingMinutes > 0 ? `${remainingMinutes}m` : '',
+		]
+			.filter(Boolean)
+			.join(' ');
+	};
 </script>
 
 <style>
@@ -112,8 +137,9 @@
 </style>
 
 <div
+	bind:this={taskElement}
 	role="presentation"
-	class="transitions absolute ml-0.5 h-task-h rounded-sm bg-purple-ui px-2 py-1.5 transition-all ease-in-out hover:shadow-md hover:shadow-purple-60"
+	class="transitions absolute ml-0.5 h-task-h overflow-hidden rounded-sm bg-purple-ui px-2 py-1.5 transition-all ease-in-out hover:shadow-md hover:shadow-purple-60"
 	class:hover:cursor-pointer={!isDragging && !isLeftEdge && !isRightEdge}
 	class:cursor-grab={isDragging}
 	class:cursor-ew-resize={isLeftEdge || isRightEdge}
@@ -121,12 +147,14 @@
 	style="left: {left}px; width: {width}px; top: {top}px"
 	on:mousemove={handleOnMouseMove}
 	on:mousedown={handleOnMouseDown}
-	on:click={handleOnClick}
 >
 	<div class:pointer-events-none={isResizing}>
 		<p class="text-sm font-semibold text-white">
 			{task.name}
 		</p>
-		<p class="text-xs text-white/60">{task.name}</p>
+		<div class="flex items-center justify-between">
+			<p class="line-clamp-1 text-xs text-white/60">{task.name}</p>
+			<p class="line-clamp-1 text-xs font-semibold text-white">{getTaskEstimatedMinutes()} daily</p>
+		</div>
 	</div>
 </div>
